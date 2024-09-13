@@ -12,7 +12,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api"
 import { BN } from "@polkadot/util"
 import { blake2AsHex } from "@polkadot/util-crypto"
 import dotenv from "dotenv"
-import { beforeAll, describe, it, expect } from "vitest"
+import { beforeAll, describe, expect, it } from "vitest"
 
 import type { GetStoreTxSignCallback, Web3Name } from "@kiltprotocol/did"
 import type {
@@ -26,10 +26,10 @@ import type {
   KiltAddress,
   VerificationKeyType,
 } from "@kiltprotocol/types"
+import type { u32 } from '@polkadot/types-codec'
 import type { Option, Vec } from "@polkadot/types/codec"
 import type { Call } from "@polkadot/types/interfaces"
 import type { Codec } from "@polkadot/types/types"
-import type { u32 } from '@polkadot/types-codec'
 
 import { signAndSubmitTx, withCrossModuleSystemImport } from "../utils.js"
 
@@ -52,7 +52,11 @@ const keyring = new Kilt.Utils.Keyring({
   type: "sr25519",
   ss58Format: Kilt.Utils.ss58Format,
 })
-const providerAndConsumerSudoKeypair = keyring.addFromUri("//Alice")
+// const providerAndConsumerSudoKeypair = keyring.addFromUri("//Alice")
+const providerAndConsumerSudoKeypair = keyring.addFromMnemonic("oblige vessel adult truck frog run guitar lecture bargain fuel borrow rigid")
+
+// const providerAndConsumerSudoKeypair = keyring.addFromUri("//Testing")
+
 
 Kilt.ConfigService.set({ submitTxResolveOn: Kilt.Blockchain.IS_IN_BLOCK })
 
