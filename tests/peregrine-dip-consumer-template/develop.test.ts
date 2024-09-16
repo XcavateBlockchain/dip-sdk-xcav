@@ -290,11 +290,11 @@ describe("V0", () => {
         it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
           const region= 0; 
-          const location = 0; 
+          const location = 0;
           const tokenPrice = 1000; 
           const tokenAmount = 50;
           
-          const data = 0; 
+          const data = 8; 
           
           const call = consumerApi.tx.nftMarketplace.listObject(
               region,
@@ -302,7 +302,7 @@ describe("V0", () => {
               tokenPrice,
               tokenAmount,
               data
-          ).method  as Call;
+          ).method as Call;
           const lastStoredRelayBlockNumber = await (async () => {
             const latestFinalizedConsumerBlock = await consumerApi.rpc.chain.getFinalizedHead()
             const consumerApiAtLatestFinalizedBlock = await consumerApi.at(latestFinalizedConsumerBlock)
@@ -343,20 +343,7 @@ describe("V0", () => {
             status.isInBlock,
             "Status of submitted tx should be in block.",
           ).toBe(true)
-          /*const blockHash = status.asInBlock
-          const blockNumber = (await consumerApi.rpc.chain.getHeader(blockHash))
-            .number
-          // The example PostIt pallet generates the storage key for a post by hashing (block number, submitter's username, content of the post).
-           const postKey = blake2AsHex(
-            consumerApi
-              .createType(
-                `(${config.consumer.blockNumberRuntimeType as string
-                }, ${web3NameRuntimeType}, Bytes)`,
-                [blockNumber, web3Name, postText],
-              )
-              .toHex(),
-          ) */
-          const assetNumber = 1
+          const assetNumber = 4
           const postEntry =
             await consumerApi.query.nftMarketplace.assetIdDetails<Option<Codec>>(assetNumber)
           expect(
