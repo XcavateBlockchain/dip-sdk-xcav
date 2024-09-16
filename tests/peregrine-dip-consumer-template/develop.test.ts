@@ -289,9 +289,20 @@ describe("V0", () => {
       async (DipSdk) => {
         it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
-          const number=10; 
-
-          const call = consumerApi.tx.nftMarketplace.didTest(number).method  as Call;
+          const region= 1; 
+          const location = 123; 
+          const tokenPrice = 1000; 
+          const tokenAmount = 50;
+          
+          const data = [72, 101, 108, 108, 111]; 
+          
+          const call = consumerApi.tx.nftMarketplace.listObject(
+              region,
+              location,
+              tokenPrice,
+              tokenAmount,
+              data
+          ).method  as Call;
           const lastStoredRelayBlockNumber = await (async () => {
             const latestFinalizedConsumerBlock = await consumerApi.rpc.chain.getFinalizedHead()
             const consumerApiAtLatestFinalizedBlock = await consumerApi.at(latestFinalizedConsumerBlock)
@@ -345,8 +356,9 @@ describe("V0", () => {
               )
               .toHex(),
           ) */
+          const assetNumber = 1
           const postEntry =
-            await consumerApi.query.nftMarketplace.didStorage<Option<Codec>>(number)
+            await consumerApi.query.nftMarketplace.assetIdDetails<Option<Codec>>(assetNumber)
           expect(
             postEntry.isSome,
             "Post should successfully be stored on the chain",
