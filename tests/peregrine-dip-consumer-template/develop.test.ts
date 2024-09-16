@@ -12,7 +12,7 @@ import { ApiPromise, WsProvider } from "@polkadot/api"
 import { BN } from "@polkadot/util"
 import { blake2AsHex } from "@polkadot/util-crypto"
 import dotenv from "dotenv"
-import { beforeAll, describe, it, expect } from "vitest"
+import { beforeAll, describe, expect, it } from "vitest"
 
 import type { GetStoreTxSignCallback, Web3Name } from "@kiltprotocol/did"
 import type {
@@ -26,10 +26,10 @@ import type {
   KiltAddress,
   VerificationKeyType,
 } from "@kiltprotocol/types"
+import type { u32 } from '@polkadot/types-codec'
 import type { Option, Vec } from "@polkadot/types/codec"
 import type { Call } from "@polkadot/types/interfaces"
 import type { Codec } from "@polkadot/types/types"
-import type { u32 } from '@polkadot/types-codec'
 
 import { signAndSubmitTx, withCrossModuleSystemImport } from "../utils.js"
 
@@ -52,13 +52,17 @@ const keyring = new Kilt.Utils.Keyring({
   type: "sr25519",
   ss58Format: Kilt.Utils.ss58Format,
 })
-const providerAndConsumerSudoKeypair = keyring.addFromUri("//Alice")
+// const providerAndConsumerSudoKeypair = keyring.addFromUri("//Alice")
+const providerAndConsumerSudoKeypair = keyring.addFromMnemonic("oblige vessel adult truck frog run guitar lecture bargain fuel borrow rigid")
+
+// const providerAndConsumerSudoKeypair = keyring.addFromUri("//Testing")
+
 
 Kilt.ConfigService.set({ submitTxResolveOn: Kilt.Blockchain.IS_IN_BLOCK })
 
-const relayAddress = `ws://127.0.0.1:${process.env["RELAY_ALICE_RPC"]}`
-const providerAddress = `ws://127.0.0.1:${process.env["PROVIDER_ALICE_RPC"]}`
-const consumerAddress = `ws://127.0.0.1:${process.env["CONSUMER_ALICE_RPC"]}`
+const relayAddress = `wss://paseo-rpc.dwellir.com`
+const providerAddress = `wss://peregrine.kilt.io/parachain-public-ws/`
+const consumerAddress = `wss://rpc-paseo.xcavate.io:443`
 
 describe("V0", () => {
   // beforeAll
@@ -285,8 +289,20 @@ describe("V0", () => {
       async (DipSdk) => {
         it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
-          const postText = "Hello, world!"
-          const call = consumerApi.tx.postIt.post(postText).method as Call
+          const region= 0; 
+          const location = 0;
+          const tokenPrice = 1000; 
+          const tokenAmount = 50;
+          
+          const data = 8; 
+          
+          const call = consumerApi.tx.nftMarketplace.listObject(
+              region,
+              location,
+              tokenPrice,
+              tokenAmount,
+              data
+          ).method as Call;
           const lastStoredRelayBlockNumber = await (async () => {
             const latestFinalizedConsumerBlock = await consumerApi.rpc.chain.getFinalizedHead()
             const consumerApiAtLatestFinalizedBlock = await consumerApi.at(latestFinalizedConsumerBlock)
@@ -327,21 +343,9 @@ describe("V0", () => {
             status.isInBlock,
             "Status of submitted tx should be in block.",
           ).toBe(true)
-          const blockHash = status.asInBlock
-          const blockNumber = (await consumerApi.rpc.chain.getHeader(blockHash))
-            .number
-          // The example PostIt pallet generates the storage key for a post by hashing (block number, submitter's username, content of the post).
-          const postKey = blake2AsHex(
-            consumerApi
-              .createType(
-                `(${config.consumer.blockNumberRuntimeType as string
-                }, ${web3NameRuntimeType}, Bytes)`,
-                [blockNumber, web3Name, postText],
-              )
-              .toHex(),
-          )
+          const assetNumber = 4
           const postEntry =
-            await consumerApi.query.postIt.posts<Option<Codec>>(postKey)
+            await consumerApi.query.nftMarketplace.assetIdDetails<Option<Codec>>(assetNumber)
           expect(
             postEntry.isSome,
             "Post should successfully be stored on the chain",
