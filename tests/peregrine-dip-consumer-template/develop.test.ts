@@ -289,12 +289,12 @@ describe("V0", () => {
       async (DipSdk) => {
         it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
-          const region= 1; 
-          const location = 123; 
+          const region= 0; 
+          const location = 0; 
           const tokenPrice = 1000; 
           const tokenAmount = 50;
           
-          const data = [72, 101, 108, 108, 111]; 
+          const data = 0; 
           
           const call = consumerApi.tx.nftMarketplace.listObject(
               region,
