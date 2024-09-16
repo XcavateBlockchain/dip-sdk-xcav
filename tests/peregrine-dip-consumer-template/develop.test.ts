@@ -289,20 +289,9 @@ describe("V0", () => {
       async (DipSdk) => {
         it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
-          const region= 1; 
-          const location = 123; 
-          const tokenPrice = 1000; 
-          const tokenAmount = 50;
-          
-          const data = [72, 101, 108, 108, 111]; 
-          
-          const call = consumerApi.tx.nftMarketplace.listObject(
-              region,
-              location,
-              tokenPrice,
-              tokenAmount,
-              data
-          ).method  as Call;
+          const number=10; 
+
+          const call = consumerApi.tx.nftMarketplace.didTest(number).method  as Call;
           const lastStoredRelayBlockNumber = await (async () => {
             const latestFinalizedConsumerBlock = await consumerApi.rpc.chain.getFinalizedHead()
             const consumerApiAtLatestFinalizedBlock = await consumerApi.at(latestFinalizedConsumerBlock)
@@ -343,11 +332,11 @@ describe("V0", () => {
             status.isInBlock,
             "Status of submitted tx should be in block.",
           ).toBe(true)
-          const blockHash = status.asInBlock
+          /*const blockHash = status.asInBlock
           const blockNumber = (await consumerApi.rpc.chain.getHeader(blockHash))
             .number
           // The example PostIt pallet generates the storage key for a post by hashing (block number, submitter's username, content of the post).
-/*           const postKey = blake2AsHex(
+           const postKey = blake2AsHex(
             consumerApi
               .createType(
                 `(${config.consumer.blockNumberRuntimeType as string
@@ -356,14 +345,11 @@ describe("V0", () => {
               )
               .toHex(),
           ) */
-          const assetNumber = 1
-          const assetDetails =
-            await consumerApi.query.NftMarketplace.asse_id_details<Option<Codec>>(assetNumber)
-/*           const postEntry =
-            await consumerApi.query.postIt.posts<Option<Codec>>(postKey) */
+          const postEntry =
+            await consumerApi.query.nftMarketplace.did_storage<Option<Codec>>(number)
           expect(
-            assetDetails.isSome,
-            "Property should successfully be stored on the chain",
+            postEntry.isSome,
+            "Post should successfully be stored on the chain",
           ).toBe(true)
         })
       },
