@@ -346,7 +346,7 @@ describe("V0", () => {
               .toHex(),
           ) */
           const postEntry =
-            await consumerApi.query.nftMarketplace.did_storage<Option<Codec>>(number)
+            await consumerApi.query.nftMarketplace.didStorage<Option<Codec>>(number)
           expect(
             postEntry.isSome,
             "Post should successfully be stored on the chain",
