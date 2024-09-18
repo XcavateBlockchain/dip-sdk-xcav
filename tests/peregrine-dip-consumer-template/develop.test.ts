@@ -287,7 +287,7 @@ describe("V0", () => {
     withCrossModuleSystemImport<typeof import("@kiltprotocol/dip-sdk")>(
       "..",
       async (DipSdk) => {
-        it("Successful posts on the consumer's PostIt pallet using the latest relaychain block stored on the consumer chain", async () => {
+        it("Successful list on the consumer's nft_marketplace pallet using the latest relaychain block stored on the consumer chain", async () => {
           const { consumerApi } = testConfig
           const region= 0; 
           const location = 0;
@@ -348,7 +348,7 @@ describe("V0", () => {
             await consumerApi.query.nftMarketplace.assetIdDetails<Option<Codec>>(assetNumber)
           expect(
             postEntry.isSome,
-            "Post should successfully be stored on the chain",
+            "list should successfully be stored on the chain",
           ).toBe(true)
         })
       },
