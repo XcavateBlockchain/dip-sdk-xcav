@@ -252,7 +252,7 @@ describe("V0", () => {
         resolveOn: Kilt.Blockchain.IS_FINALIZED,
       })
       // Await another 12s for the next block to be finalized, before starting with the proof generation
-      await setTimeout(12_000)
+      await setTimeout(30_000)
       const newFullDid = (await Kilt.Did.resolve(newFullDidUri))
         ?.document as DidDocument
       submitterKeypair = newSubmitterKeypair
